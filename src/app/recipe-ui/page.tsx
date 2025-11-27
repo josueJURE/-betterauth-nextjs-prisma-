@@ -17,49 +17,33 @@ import {
 import DietaryRequirements from "@/components/ui/dietary-requirements";
 import { Input } from "@/components/ui/input";
 
-
-
 export default function Test() {
+  const [selectedCountry, setSelectedCountry] = useState<string>("");
 
-  const [selectedCountry,  setSelectedCountry] = useState<string>("")
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false)
+  const [otherDietaryRequirements, setOtherDietaryRequirements] =
+    useState<boolean>(false);
 
-  const [ohterDietaryRequirements, setOhterietaryRequirements] = useState<boolean>(false)
-
-
-const handlleDietaryRequirements = () => {
-  setOhterietaryRequirements(prev => !prev)
-  console.log(ohterDietaryRequirements)
-}
-
-
-
+  const handlleDietaryRequirements = () => {
+    setOtherDietaryRequirements((prev) => !prev);
+   
+  };
 
   const handleCountrySelect = (countryName: string) => {
     setSelectedCountry(countryName);
   };
 
-
-
   return (
     <>
- 
       <main className="min-h-screen w-full flex items-center justify-center p-4">
-     
         <form className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl">
-      
           <Card className=" flex items-center">
-            <DietaryRequirements onChange={handlleDietaryRequirements}/>
-           {ohterDietaryRequirements && (<Input type="" className="w-0.25xl"/>)}
+            <DietaryRequirements onToggle={handlleDietaryRequirements} />
+            {otherDietaryRequirements && <Input type="" className="w-0.25xl" />}
 
-
-          
-         
-        
-     
             <div>{selectedCountry}</div>
-     
+
             <Map
               handleCountrySelect={handleCountrySelect}
               isDarkMode={isDarkMode}
