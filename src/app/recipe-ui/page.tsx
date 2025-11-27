@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 
 import DietaryRequirements from "@/components/ui/dietary-requirements";
+import { Input } from "@/components/ui/input";
 
 
 
@@ -24,8 +25,13 @@ export default function Test() {
 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false)
 
+  const [ohterDietaryRequirements, setOhterietaryRequirements] = useState<boolean>(false)
 
 
+const handlleDietaryRequirements = () => {
+  setOhterietaryRequirements(prev => !prev)
+  console.log(ohterDietaryRequirements)
+}
 
 
 
@@ -43,8 +49,12 @@ export default function Test() {
      
         <form className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl">
       
-          <Card className=" flex items-center justify-cente">
-            <DietaryRequirements/>
+          <Card className=" flex items-center">
+            <DietaryRequirements onChange={handlleDietaryRequirements}/>
+           {ohterDietaryRequirements && (<Input type="" className="w-0.25xl"/>)}
+
+
+          
          
         
      
