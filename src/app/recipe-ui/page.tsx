@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import DietaryRequirements from "@/components/ui/dietary-requirements";
-import { Input } from "@/components/ui/input";
+
 
 export default function Test() {
   const [selectedCountry, setSelectedCountry] = useState<string>("");
@@ -27,10 +27,6 @@ export default function Test() {
   const [otherDietaryRequirements, setOtherDietaryRequirements] =
     useState<boolean>(false);
 
-  // const handlleDietaryRequirements = () => {
-  //   setOtherDietaryRequirements((prev) => !prev);
-
-  // };
 
   const handleDietaryRequirements = (checked: boolean) => {
     setOtherDietaryRequirements(checked);
@@ -46,11 +42,10 @@ export default function Test() {
         <form className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl">
           <Card className=" flex items-center">
             <DietaryRequirements onToggle={handleDietaryRequirements} />
-            {/* {otherDietaryRequirements && <Input type="text" className="w-0.25xl" />} */}
 
-            {selectedCountry && ( <div>{`You want a dish from ${selectedCountry}`}</div>) }
-           
-       
+            {selectedCountry && (
+              <div>{`You want a dish from ${selectedCountry}`}</div>
+            )}
 
             <Map
               handleCountrySelect={handleCountrySelect}
