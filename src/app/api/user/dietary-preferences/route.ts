@@ -35,12 +35,7 @@ export async function PATCH(request: Request) {
       );
     }
 
-    // await prisma.userPreferences.create({
-    //   data: {
-    //     userId,
-    //     vegan: true,
-    //   },
-    // });
+
 
     // Update or create the user's vegan preference
     const updatedUser = await prisma.userPreferences.upsert({

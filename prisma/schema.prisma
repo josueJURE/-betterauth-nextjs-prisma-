@@ -13,21 +13,7 @@ datasource db {
   provider = "postgresql"
 }
 
-// model User {
-//   id            String    @id
-//   name          String
-//   email         String
-//   emailVerified Boolean   @default(false)
-//   image         String?
-//   createdAt     DateTime  @default(now())
-//   updatedAt     DateTime  @updatedAt
-//   sessions      Session[]
-//   accounts      Account[]
-//   vegan         Boolean   @default(false)
 
-//   @@unique([email])
-//   @@map("user")
-// }
 model User {
   id            String           @id
   name          String
@@ -44,6 +30,8 @@ model User {
 
   @@map("user")
 }
+
+// #Gladiator2000
 
 model UserPreferences {
   // Use the User.id as both the PK and FK

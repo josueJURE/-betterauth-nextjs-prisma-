@@ -46,8 +46,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setSelectedCountry(countryName);
   };
 
-  const handleCountrySelection = async () => {
-    // console.log("country selected")
+  const handleCountrySelection = async (e: React.FormEvent) => {
+   
+    e.preventDefault();  // <-- REQUIRED
     const response = await fetch("/api/user/country-post-request", {
       method: "POST",
       headers: {
