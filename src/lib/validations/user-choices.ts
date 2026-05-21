@@ -67,6 +67,27 @@ export const recipeContentSchema = z
   .min(1, "Recipe required")
   .max(50000);
 
+export const nutritionItemSchema = z.object({
+  label: z.string().trim().min(1, "Nutrition label is required").max(80),
+  value: z.number().nonnegative().max(200000),
+  unit: z.string().trim().min(1).max(30).default("g"),
+});
+
+export const nutritionSchema = z.array(nutritionItemSchema).max(12);
+
+export const shoppingListItemSchema = z.object({
+  text: z.string().trim().min(1, "Shopping list item is required").max(160),
+  checked: z.boolean().default(false),
+});
+
+export const shoppingListSchema = z.array(shoppingListItemSchema).max(80);
+
+export const saveRecipeSchema = z.object({
+  menuContent: recipeContentSchema,
+  nutrition: nutritionSchema.default([]),
+  shoppingList: shoppingListSchema.default([]),
+});
+
 export const pinnedCountrySchema = z.object({
   country: z
     .string()
@@ -94,6 +115,9 @@ export type MenuContentForImageSchema = z.infer<
 >;
 export type CountrySchema = z.infer<typeof countrySchema>;
 export type RecipeSchema = z.infer<typeof recipeContentSchema>;
+export type NutritionItem = z.infer<typeof nutritionItemSchema>;
+export type ShoppingListItem = z.infer<typeof shoppingListItemSchema>;
+export type SaveRecipeSchema = z.infer<typeof saveRecipeSchema>;
 export type RetrieveRecipeSchema = z.infer<typeof retrieveRecipeSchema>;
 export type RecipeStandardUUIDv4Schema = z.infer<typeof retrieveRecipeSchema>;
 export type EmailSchema = z.infer<typeof emailSchema>;

@@ -24,12 +24,18 @@ import {
   secondaryButtonClassName,
   themeColor,
 } from "@/utils/const";
+import type {
+  NutritionItem,
+  ShoppingListItem,
+} from "@/lib/validations/user-choices";
 
 export default function SavedRecipes() {
   interface Recipe {
     content: string;
     id: string;
     createdAt: string;
+    nutrition: NutritionItem[];
+    shoppingList: ShoppingListItem[];
 
     // Add other fields of the recipe object here
   }
@@ -134,12 +140,15 @@ export default function SavedRecipes() {
                     key={recipe.id}
                     id={recipe.id}
                     text={recipe.content}
+                    nutrition={recipe.nutrition}
+                    shoppingList={recipe.shoppingList}
                     date={recipe.createdAt}
                     onDelete={handleDeleteRecipe}
                   />
                 ))}
               </div>
             )}
+            
           </div>
         </section>
       </div>

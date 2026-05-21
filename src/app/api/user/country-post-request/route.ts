@@ -3,23 +3,19 @@ import { auth } from "@/lib/auth";
 import { userChoicesSchema } from "@/lib/validations/user-choices";
 import { sql } from "@/lib/db";
 import { headers } from "next/headers";
-
-// Import the TYPE (used at compile-time for type checking)
+import { chatCompletion } from "@/lib/chat-completions/openai";
+import { isProduction } from "@/lib/server/env";
 
 type UpdatedPinnedCountriesRow = {
   selectedCountries: string[];
 };
 
-import { chatCompletion } from "@/lib/chat-completions/openai";
-import { isProduction } from "@/lib/server/env";
-
 export async function POST(request: NextRequest) {
   try {
-       const session = await auth.api.getSession({
-          headers: await headers(),
-        });
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
     const body = await request.json();
-    console.log("Received body:", body);
 
     const userChoicesValidation = userChoicesSchema.safeParse(body);
 
@@ -42,15 +38,11 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
-    
 
+    const userId = session.user.id;
 
-    const userId = session?.user.id;
-
-
-
-        const updatedPinnedCountries = await sql<UpdatedPinnedCountriesRow>(
-          `
+    const updatedPinnedCountries = await sql<UpdatedPinnedCountriesRow>(
+      `
           UPDATE "user"
           SET
             "selectedCountries" = CASE
@@ -61,24 +53,22 @@ export async function POST(request: NextRequest) {
           WHERE "id" = $2
           RETURNING "selectedCountries"
           `,
-          [country, userId]
-        );
+      [country, userId]
+    );
 
-        if (updatedPinnedCountries.rowCount === 0) {
-          return NextResponse.json(
-            { success: false, message: "User not found" },
-            { status: 404 }
-          );
-        }
-    
-    
-
-    console.log("is other picked up", other);
+    if (updatedPinnedCountries.rowCount === 0) {
+      return NextResponse.json(
+        { success: false, message: "User not found" },
+        { status: 404 }
+      );
+    }
 
     const encoder = new TextEncoder();
 
     // Mock recipe for development to save tokens
-    const mockRecipe = `(mockRecipe aa)One traditional Turkish dish that can easily be made vegan is "Borscht."
+    const mockRecipe = `(mockRecipe aa)
+Dish Name:
+Vegan Borscht
 
 Ingredients:
 - 2 tbsp olive oil
@@ -95,11 +85,32 @@ Ingredients:
 - Vegan sour cream and chopped fresh dill for garnish (optional)
 
 Instructions:
-1. In a large pot, heat the olive oil over medium heat. Add the onion and garlic and sauté until softened.
-2. Add the beets, carrots, and potatoes to the pot and sauté for 5-7 minutes.
+1. In a large pot, heat the olive oil over medium heat. Add the onion and garlic and saute until softened.
+2. Add the beets, carrots, and potatoes to the pot and saute for 5-7 minutes.
 3. Pour in the vegetable broth and diced tomatoes. Bring the mixture to a boil, then reduce heat and let simmer for 20-25 minutes or until the vegetables are tender.
 4. Stir in the apple cider vinegar and dried dill. Season with salt and pepper to taste.
-5. Serve the borscht hot, garnished with a dollop of vegan sour cream and chopped fresh dill if desired.
+5. Serve the borscht hot, garnished with vegan sour cream and chopped fresh dill if desired.
+
+Nutrition:
+- Calories: 310 kcal
+- Protein: 8 g
+- Carbs: 48 g
+- Fat: 11 g
+- Fibre: 10 g
+
+Shopping List:
+- 2 tbsp olive oil
+- 1 onion, chopped
+- 3 cloves of garlic, minced
+- 3 medium beets, peeled and diced
+- 3 medium carrots, peeled and diced
+- 3 medium potatoes, peeled and diced
+- 4 cups vegetable broth
+- 1 can of diced tomatoes
+- 1 tbsp apple cider vinegar
+- 1 tsp dried dill
+- Salt and pepper to taste
+- Vegan sour cream and chopped fresh dill for garnish (optional)
 
 `;
 
@@ -142,7 +153,6 @@ Instructions:
               const message = chunk.choices[0]?.delta?.content || "";
 
               if (message) {
-                console.log(message);
                 // Send each chunk to the client
                 controller.enqueue(encoder.encode(message));
               }

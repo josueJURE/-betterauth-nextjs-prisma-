@@ -3,9 +3,12 @@ import { auth } from "@/lib/auth";
 import { sql } from "@/lib/db";
 
 import { NextRequest, NextResponse } from "next/server";
+import { saveRecipeSchema } from "@/lib/validations/user-choices";
 import {
-  recipeContentSchema,
-} from "@/lib/validations/user-choices";
+  extractRecipeDetails,
+  normalizeNutrition,
+  normalizeShoppingList,
+} from "@/lib/recipe-details";
 
 export async function PATCH(request: NextRequest) {
   try {
@@ -23,40 +26,54 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    console.log("body", body);
-    const recipeContentSchemaValidation = recipeContentSchema.safeParse(body);
+    const saveRecipeValidation = saveRecipeSchema.safeParse(
+      typeof body === "string" ? { menuContent: body } : body
+    );
 
-    if (!recipeContentSchemaValidation.success) {
+    if (!saveRecipeValidation.success) {
       return NextResponse.json(
         {
-          error: recipeContentSchemaValidation.error.issues,
+          error: saveRecipeValidation.error.issues,
         },
         { status: 400 }
       );
     }
 
-    const menuContent = recipeContentSchemaValidation.data;
+    const { menuContent } = saveRecipeValidation.data;
+    const extractedDetails = extractRecipeDetails(menuContent);
+    const nutrition = normalizeNutrition(saveRecipeValidation.data.nutrition);
+    const shoppingList = normalizeShoppingList(
+      saveRecipeValidation.data.shoppingList
+    );
+    const recipeNutrition =
+      nutrition.length > 0 ? nutrition : extractedDetails.nutrition;
+    const recipeShoppingList =
+      shoppingList.length > 0 ? shoppingList : extractedDetails.shoppingList;
 
-    const userId = session.user.id
+    const userId = session.user.id;
 
     const savedRecipeResult = await sql(
-      `INSERT INTO "recipe" ("id", "content", "userId", "createdAt", "updatedAt")
-       VALUES (gen_random_uuid()::text, $1, $2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `INSERT INTO "recipe" ("id", "content", "nutrition", "shoppingList", "userId", "createdAt", "updatedAt")
+       VALUES (gen_random_uuid()::text, $1, $2::jsonb, $3::jsonb, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
        ON CONFLICT ("userId", "content")
-       DO UPDATE SET "updatedAt" = "recipe"."updatedAt"
-       RETURNING "id", "title", "content", "imageUrl", "audioUrl", "userId", "createdAt", "updatedAt"`,
-      [menuContent, userId]
+       DO UPDATE SET
+         "nutrition" = EXCLUDED."nutrition",
+         "shoppingList" = EXCLUDED."shoppingList",
+         "updatedAt" = CURRENT_TIMESTAMP
+       RETURNING "id", "title", "content", "imageUrl", "audioUrl", "nutrition", "shoppingList", "userId", "createdAt", "updatedAt"`,
+      [
+        menuContent,
+        JSON.stringify(recipeNutrition),
+        JSON.stringify(recipeShoppingList),
+        userId,
+      ]
     );
     const savedRecipe = savedRecipeResult.rows[0];
-      
-      
-
-    console.log("menu saved", menuContent);
 
     return NextResponse.json(
       {
         message: "recipe added to your favorites",
-        savedRecipe
+        savedRecipe,
       },
       { status: 200 }
     );
