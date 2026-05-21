@@ -18,7 +18,15 @@ export async function chatCompletion(
     messages: [
       {
         role: "user",
-        content: `make me a dish from ${country}${veganNote}${additionalNoteText}`,
+        content: `make me a dish from ${country}${veganNote}${additionalNoteText}
+Include:
+- dish name
+- ingredients
+- cooking instructions
+- estimated nutrition information with these exact labels: Calories, Protein, Carbs, Fat, Fibre
+- a shopping list section
+
+Use these section headings: Dish Name, Ingredients, Instructions, Nutrition, Shopping List.`,
       },
     ],
     model: "gpt-3.5-turbo",

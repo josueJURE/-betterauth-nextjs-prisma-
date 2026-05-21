@@ -75,12 +75,18 @@ CREATE TABLE IF NOT EXISTS "recipe" (
     "content" TEXT NOT NULL,
     "imageUrl" TEXT,
     "audioUrl" TEXT,
+    "nutrition" JSONB NOT NULL DEFAULT '[]'::jsonb,
+    "shoppingList" JSONB NOT NULL DEFAULT '[]'::jsonb,
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "recipe_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "recipe_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+ALTER TABLE "recipe"
+    ADD COLUMN IF NOT EXISTS "nutrition" JSONB NOT NULL DEFAULT '[]'::jsonb,
+    ADD COLUMN IF NOT EXISTS "shoppingList" JSONB NOT NULL DEFAULT '[]'::jsonb;
 
 CREATE INDEX IF NOT EXISTS "recipe_userId_idx" ON "recipe" ("userId");
 CREATE UNIQUE INDEX IF NOT EXISTS "recipe_userId_content_key" ON "recipe" ("userId", "content");

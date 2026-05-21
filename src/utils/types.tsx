@@ -1,6 +1,10 @@
 // types/forms.ts
 import { z } from "zod";
 import { registerFormSchema } from "@/lib/validations/user-choices";
+import type {
+  NutritionItem,
+  ShoppingListItem,
+} from "@/lib/validations/user-choices";
 import type { CSSProperties, ReactNode } from "react";
 
 // ✅ inferred type from schema
@@ -72,6 +76,8 @@ export interface DietaryRequirementsProps {
 export interface ReadMoreProps {
   id: string;
   text: string;
+  nutrition?: NutritionItem[];
+  shoppingList?: ShoppingListItem[];
   amountOfWords?: number;
   date: string;
   onDelete?: (id: string) => Promise<void> | void;

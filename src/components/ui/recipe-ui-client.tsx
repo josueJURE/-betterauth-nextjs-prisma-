@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChefHat } from "lucide-react";
@@ -21,6 +21,11 @@ import {
   recipeContentSchema,
   userInbox,
 } from "@/lib/validations/user-choices";
+import type {
+  NutritionItem,
+  ShoppingListItem,
+} from "@/lib/validations/user-choices";
+import { extractRecipeDetails } from "@/lib/recipe-details";
 import type { RecipeUIProps } from "@/utils/types";
 import {
   appSectionClassName,
@@ -39,13 +44,11 @@ import {
   primaryButtonStyle,
   sectionHeadingClassName,
   themeColor,
-  tabsTriggerClassName,
 } from "@/utils/const";
 
 import { retrieveUserFirstName } from "@/utils/helper-functions/helper-functions";
 
 import DietaryRequirements from "@/components/ui/dietary-requirements";
-import { AlertDialogCompoment } from "@/components/dialog";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -62,7 +65,6 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   const router = useRouter();
   const { data: sessionData } = useSession();
 
-  console.log("sessionData", typeof sessionData?.user.name);
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [recipes, setRecipes] = useState<unknown[]>([]);
   const [arraySelectedCountries, setArraySelectedCountries] = useState<
@@ -78,6 +80,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState<boolean>(false);
   const [backgroundPicture, setIsBckgroundPicture] = useState<string>("");
+  const [nutrition, setNutrition] = useState<NutritionItem[]>([]);
+  const [shoppingList, setShoppingList] = useState<ShoppingListItem[]>([]);
   const [vegan, setVegan] = useState<boolean>(userProps.vegan);
   const [otherDietaryRequirements, setOtherDietaryRequirements] =
     useState<boolean>(false);
@@ -132,7 +136,11 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     }
 
     try {
-      await handleSavedMenuResponse(menuContent);
+      await handleSavedMenuResponse({
+        menuContent,
+        nutrition,
+        shoppingList,
+      });
     } catch (error) {
       console.error(error);
       toast("Something went wrong");
@@ -152,6 +160,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsMenuDisplayed(true);
     setIsBackToHomePage(false);
     setMenuContent("");
+    setNutrition([]);
+    setShoppingList([]);
     setRecipeAudio(null);
     setIsBckgroundPicture("");
     setIsGeneratingAudio(shouldGenerateAudio);
@@ -190,6 +200,10 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
         accumulatedContent += finalText;
         setMenuContent((prev) => prev + finalText);
       }
+
+      const recipeDetails = extractRecipeDetails(accumulatedContent);
+      setNutrition(recipeDetails.nutrition);
+      setShoppingList(recipeDetails.shoppingList);
 
       const imageRequest = shouldGenerateImage
         ? postJson<{ backGroundPicture: string }>(

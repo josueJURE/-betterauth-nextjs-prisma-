@@ -1,4 +1,8 @@
 import { toast } from "sonner";
+import type {
+  NutritionItem,
+  ShoppingListItem,
+} from "@/lib/validations/user-choices";
 
 const headers = {
   "Content-Type": "application/json",
@@ -41,11 +45,19 @@ export const handleRecipeDeletion = async (id: string) => {
   toast("recipe deleted");
 };
 
-export const handleSavedMenuResponse = async (menuContent: string) => {
+type SaveRecipePayload = {
+  menuContent: string;
+  nutrition: NutritionItem[];
+  shoppingList: ShoppingListItem[];
+};
+
+export const handleSavedMenuResponse = async (
+  recipePayload: SaveRecipePayload
+) => {
   const response = await fetch("/api/user/save-recipe-request", {
     method: "PATCH",
     headers,
-    body: JSON.stringify(menuContent), // Sending raw string → works, but not ideal.  body: JSON.stringify({ menuContent }), would be better
+    body: JSON.stringify(recipePayload),
   });
   if (!response.ok) {
     const errorData = await response.json();
@@ -92,5 +104,4 @@ export const handleCountrySelectionResponse = async ({
 
   return response;
 };
-
 

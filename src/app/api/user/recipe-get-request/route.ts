@@ -2,6 +2,28 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { sql } from "@/lib/db";
+import {
+  extractRecipeDetails,
+  normalizeNutrition,
+  normalizeShoppingList,
+} from "@/lib/recipe-details";
+
+type SavedRecipeRow = {
+  id: string;
+  title: string | null;
+  content: string;
+  imageUrl: string | null;
+  audioUrl: string | null;
+  nutrition: unknown;
+  shoppingList: unknown;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type SelectedCountriesRow = {
+  selectedCountries: string[];
+};
 
 export async function GET() {
   try {
@@ -20,61 +42,45 @@ export async function GET() {
     }
 
     const userId = session.user.id;
-    const selectedCountriesResult = await sql(
+    const selectedCountriesResult = await sql<SelectedCountriesRow>(
       `SELECT "selectedCountries"
        FROM "user"
        WHERE "id" = $1
        ORDER BY "createdAt" DESC`,
       [userId]
     );
-    const savedSelectedCountries = selectedCountriesResult.rows
+    const savedSelectedCountries = selectedCountriesResult.rows;
 
-    
-
-    /*
-    const selectedCountriesResult = await sql(
-      `SELECT "selectedCountries"
-       FROM "user"
-       WHERE "id" = $1
-       ORDER BY "createdAt" DESC`,
-      [userId]
-    );
-    const savedSelectedCountries = selectedCountriesResult.rows
-  
-
-    return NextResponse.json(
-      {
-        success: true,
-        message: "recipe retrieved",
-        recipes: savedRecipes,
-        selectedCountries: savedSelectedCountries
-      },
-      { status: 200 }
-    );
-
-  //use : const [arraySelectedCountries, setArraySelectedCountries] = useState<unknown[]>([]); in recipe-ui-client.tsx file
-
-
-
-*/
-    
-
-    const savedRecipesResult = await sql(
-      `SELECT "id", "title", "content", "imageUrl", "audioUrl", "userId", "createdAt", "updatedAt"
+    const savedRecipesResult = await sql<SavedRecipeRow>(
+      `SELECT "id", "title", "content", "imageUrl", "audioUrl", "nutrition", "shoppingList", "userId", "createdAt", "updatedAt"
        FROM "recipe"
        WHERE "userId" = $1
        ORDER BY "createdAt" DESC`,
       [userId]
     );
-    const savedRecipes = savedRecipesResult.rows;
+    const savedRecipes = savedRecipesResult.rows.map((recipe) => {
+      const extractedDetails = extractRecipeDetails(recipe.content);
+      const nutrition = normalizeNutrition(recipe.nutrition);
+      const shoppingList = normalizeShoppingList(recipe.shoppingList);
 
+      return {
+        ...recipe,
+        nutrition:
+          nutrition.length > 0 ? nutrition : extractedDetails.nutrition,
+        shoppingList:
+          shoppingList.length > 0
+            ? shoppingList
+            : extractedDetails.shoppingList,
+      };
+    });
 
     return NextResponse.json(
       {
         success: true,
         message: "recipe retrieved",
         recipes: savedRecipes,
-        savedSelectedCountries: savedSelectedCountries[0].selectedCountries
+        savedSelectedCountries:
+          savedSelectedCountries[0]?.selectedCountries ?? [],
       },
       { status: 200 }
     );
