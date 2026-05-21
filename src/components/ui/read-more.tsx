@@ -60,7 +60,9 @@ function buildPieBackground(items: NutritionItem[]) {
 
   const segments = items.map((item, index) => {
     const end = start + (item.value / total) * 100;
-    const segment = `${nutritionColors[index % nutritionColors.length]} ${start}% ${end}%`;
+    const segment = `${
+      nutritionColors[index % nutritionColors.length]
+    } ${start}% ${end}%`;
     start = end;
     return segment;
   });
@@ -193,9 +195,11 @@ export function ReadMore({
   amountOfWords = 50,
   onDelete,
 }: ReadMoreProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isNutritionExpanded, setIsNutritionExpanded] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isNutritionExpanded, setIsNutritionExpanded] =
+    useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [isCooked, setIsCooked] = useState<boolean>(false);
   const words = text.trim().split(/\s+/);
   const itCanOverFlow = words.length > amountOfWords;
   const beginText = itCanOverFlow
@@ -226,6 +230,32 @@ export function ReadMore({
   const displayDate = formatDatefunction(parsedDate);
   const nutritionContentId = `${id}-nutrition-content`;
 
+
+async function toggleCookedRecipes() {
+  const response = await fetch('/api/user/cooked-recipe', {
+    method: "POST", 
+    headers: {
+
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({isCooked: isCooked  })
+  })
+
+  try {
+    if(response.ok) {
+      const data = await response.json()
+      console.log(data.status)
+      console.log(data.message)
+     } 
+
+  } catch(error) {
+    console.log("error")
+  }
+
+
+
+} 
+
   const handleDeleteClick = async () => {
     if (!onDelete || isDeleting) {
       return;
@@ -248,16 +278,10 @@ export function ReadMore({
         <TabsTrigger className={tabsTriggerClassName} value="recipe">
           your recipes
         </TabsTrigger>
-        <TabsTrigger
-          className={tabsTriggerClassName}
-          value="nutrition"
-        >
+        <TabsTrigger className={tabsTriggerClassName} value="nutrition">
           Nutrition
         </TabsTrigger>
-        <TabsTrigger
-          className={tabsTriggerClassName}
-          value="shopping-list"
-        >
+        <TabsTrigger className={tabsTriggerClassName} value="shopping-list">
           Shopping list
         </TabsTrigger>
       </TabsList>
@@ -265,8 +289,17 @@ export function ReadMore({
       <TabsContent className={tabsContentClassName} value="recipe">
         <Card id={id} className={recipeCardClassName}>
           <CardHeader className="px-4 pt-4 pb-0 sm:px-5 sm:pt-5">
-            <CardDescription className="text-sm font-medium text-[#657167] sm:text-base">
+            <CardDescription className="text-sm font-medium text-[#657167] sm:text-base flex justify-between w-1xl">
               {displayDate}
+              <Button
+                className="min-h-11 rounded-md px-4 text-sm font-semibold  sm:text-base"
+                onClick={async () => {
+                  setIsCooked((prev) => !prev);
+                  await toggleCookedRecipes();
+                }}
+              >
+                {!isCooked ? "not cooked yet" : "cooked"}
+              </Button>
             </CardDescription>
           </CardHeader>
           <CardContent
