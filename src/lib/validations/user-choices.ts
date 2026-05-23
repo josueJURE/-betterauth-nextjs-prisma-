@@ -32,6 +32,8 @@ export const userChoicesSchema = z.object({
 
 export const userCookedRecipeSchema = z.object({
   isCooked: z.boolean(),
+  recipeId: z.string()
+
 });
 
 export const textToImageSchema = z.object({

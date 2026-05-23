@@ -196,6 +196,7 @@ export function ReadMore({
   onDelete,
 }: ReadMoreProps) {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [recipeId, setRecipeId] = useState<string>("")
   const [isNutritionExpanded, setIsNutritionExpanded] =
     useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
@@ -238,8 +239,12 @@ async function toggleCookedRecipes() {
 
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({isCooked: isCooked  })
+    body: JSON.stringify({isCooked, recipeId  })
   })
+
+
+
+  console.log("recipeId", recipeId )
 
   try {
     if(response.ok) {
@@ -292,8 +297,11 @@ async function toggleCookedRecipes() {
             <CardDescription className="text-sm font-medium text-[#657167] sm:text-base flex justify-between w-1xl">
               {displayDate}
               <Button
+                id={id}
                 className="min-h-11 rounded-md px-4 text-sm font-semibold  sm:text-base"
                 onClick={async () => {
+                  setRecipeId(id)
+                
                   setIsCooked((prev) => !prev);
                   await toggleCookedRecipes();
                 }}
@@ -303,7 +311,7 @@ async function toggleCookedRecipes() {
             </CardDescription>
           </CardHeader>
           <CardContent
-            id={contentId}
+         
             className={scrollableCardContentClassName}
           >
             <p className={bodyTextClassName}>
@@ -317,6 +325,7 @@ async function toggleCookedRecipes() {
             {itCanOverFlow ? (
               <>
                 <Button
+              
                   variant="ghost"
                   className="min-h-11 rounded-md px-4 text-sm font-semibold hover:bg-[#f2f7f3] sm:text-base"
                   style={{ color: themeColor }}
