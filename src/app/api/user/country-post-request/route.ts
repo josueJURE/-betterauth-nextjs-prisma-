@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
       [country, userId]
     );
 
+
     if (updatedPinnedCountries.rowCount === 0) {
       return NextResponse.json(
         { success: false, message: "User not found" },

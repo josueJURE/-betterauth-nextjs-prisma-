@@ -137,6 +137,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
     try {
       await handleSavedMenuResponse({
+        country: selectedCountry,
         menuContent,
         nutrition,
         shoppingList,

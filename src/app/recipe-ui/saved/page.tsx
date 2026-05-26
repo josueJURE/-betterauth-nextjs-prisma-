@@ -33,6 +33,7 @@ import type {
 export default function SavedRecipes() {
   interface Recipe {
     content: string;
+    country: string | null;
     id: string;
     createdAt: string;
     nutrition: NutritionItem[];
@@ -54,6 +55,7 @@ export default function SavedRecipes() {
     console.log("selected country:", country);
     console.log("selectedCountriesArray", selectedCountriesArray)
     console.log("recipes", recipes)
+    console.log("selectedCountry", selectedCountry)
    
   };
 
