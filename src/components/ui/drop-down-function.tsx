@@ -9,11 +9,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-type DropdownMenuComponentProps = {
-  countries: string[];
-};
+import type {
+  DropdownMenuComponentType
+} from "@/utils/types"
 
-export function DropdownMenuComponent({ countries }: DropdownMenuComponentProps) {
+export function DropdownMenuComponent({ countries }: DropdownMenuComponentType) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

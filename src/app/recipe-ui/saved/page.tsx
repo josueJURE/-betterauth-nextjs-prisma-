@@ -32,6 +32,10 @@ import type {
   ShoppingListItem,
 } from "@/lib/validations/user-choices";
 
+import type {
+  DropdownMenuComponentType
+} from "@/utils/types"
+
 export default function SavedRecipes() {
   interface Recipe {
     content: string;
@@ -43,10 +47,14 @@ export default function SavedRecipes() {
     // Add other fields of the recipe object here
   }
 
+
+
+  
+
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>()
-  const [selectedCountriesArray, setSelectedCountriesArray] = useState<Recipe[]>([])
+  const [selectedCountriesArray, setSelectedCountriesArray] = useState<string[]>([])
 
 
   // const [recipeID, setRecipeID] = useState<string>("")

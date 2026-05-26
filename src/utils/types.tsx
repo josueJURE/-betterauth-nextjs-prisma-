@@ -7,6 +7,10 @@ import type {
 } from "@/lib/validations/user-choices";
 import type { CSSProperties, ReactNode } from "react";
 
+export type DropdownMenuComponentType = {
+  countries: string[];
+};
+
 // ✅ inferred type from schema
 type RegisterFormValues = z.infer<typeof registerFormSchema>;
 
