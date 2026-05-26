@@ -30,6 +30,12 @@ export const userChoicesSchema = z.object({
   isImageGenerated: z.boolean(),
 });
 
+export const userCookedRecipeSchema = z.object({
+  isCooked: z.boolean(),
+  recipeId: z.string()
+
+});
+
 export const textToImageSchema = z.object({
   image: z
     .string()
@@ -123,5 +129,8 @@ export type RecipeStandardUUIDv4Schema = z.infer<typeof retrieveRecipeSchema>;
 export type EmailSchema = z.infer<typeof emailSchema>;
 
 export type PinnedCountrySchema = z.infer<typeof pinnedCountrySchema>;
-export type EmptySelectedCountryArray = z.infer<typeof emptySelectedCountryArray>;
+export type EmptySelectedCountryArray = z.infer<
+  typeof emptySelectedCountryArray
+>;
 export type TextToImageSchema = z.infer<typeof textToImageSchema>;
+export type UserCookedRecipeSchema = z.infer<typeof userCookedRecipeSchema>;

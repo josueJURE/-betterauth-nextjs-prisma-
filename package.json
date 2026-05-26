@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:schema": "psql \"$DATABASE_URL\" -f db/schema.sql"
+    "db:schema": "node scripts/apply-schema.mjs"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.1",

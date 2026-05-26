@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS "recipe" (
     "audioUrl" TEXT,
     "nutrition" JSONB NOT NULL DEFAULT '[]'::jsonb,
     "shoppingList" JSONB NOT NULL DEFAULT '[]'::jsonb,
+    "isCooked" BOOLEAN NOT NULL DEFAULT false,
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -103,3 +104,6 @@ CREATE TABLE IF NOT EXISTS "visitedCountries" (
 
 CREATE INDEX IF NOT EXISTS "visitedCountries_userId_idx" ON "visitedCountries" ("userId");
 CREATE UNIQUE INDEX IF NOT EXISTS "visitedCountries_userId_country_key" ON "visitedCountries" ("userId", "country");
+
+ALTER TABLE "recipe"
+    ADD COLUMN IF NOT EXISTS "isCooked" BOOLEAN NOT NULL DEFAULT false;
