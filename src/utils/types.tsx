@@ -9,6 +9,7 @@ import type { CSSProperties, ReactNode } from "react";
 
 export type DropdownMenuComponentType = {
   countries: string[];
+  onCountrySelect?: (country: string) => void;
 };
 
 // ✅ inferred type from schema

@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS "user_preferences" (
 CREATE TABLE IF NOT EXISTS "recipe" (
     "id" TEXT NOT NULL DEFAULT gen_random_uuid()::text,
     "title" TEXT,
+    "country" TEXT,
     "content" TEXT NOT NULL,
     "imageUrl" TEXT,
     "audioUrl" TEXT,
@@ -107,3 +108,6 @@ CREATE UNIQUE INDEX IF NOT EXISTS "visitedCountries_userId_country_key" ON "visi
 
 ALTER TABLE "recipe"
     ADD COLUMN IF NOT EXISTS "isCooked" BOOLEAN NOT NULL DEFAULT false;
+
+ALTER TABLE "recipe"
+    ADD COLUMN IF NOT EXISTS "country" TEXT;

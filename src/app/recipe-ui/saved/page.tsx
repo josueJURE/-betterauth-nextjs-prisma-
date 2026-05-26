@@ -24,17 +24,11 @@ import {
   secondaryButtonClassName,
   themeColor,
 } from "@/utils/const";
-import {
-  DropdownMenuComponent
-} from "@/components/ui/drop-down-function"
+import { DropdownMenuComponent } from "@/components/ui/drop-down-function";
 import type {
   NutritionItem,
   ShoppingListItem,
 } from "@/lib/validations/user-choices";
-
-import type {
-  DropdownMenuComponentType
-} from "@/utils/types"
 
 export default function SavedRecipes() {
   interface Recipe {
@@ -47,15 +41,21 @@ export default function SavedRecipes() {
     // Add other fields of the recipe object here
   }
 
-
-
-  
-
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>()
-  const [selectedCountriesArray, setSelectedCountriesArray] = useState<string[]>([])
+  const [error, setError] = useState<string>();
+  const [selectedCountriesArray, setSelectedCountriesArray] = useState<
+    string[]
+  >([]);
+  const [selectedCountry, setSelectedCountry] = useState<string>("");
 
+  const handleSelectedCountry = (country: string) => {
+    setSelectedCountry(country);
+    console.log("selected country:", country);
+    console.log("selectedCountriesArray", selectedCountriesArray)
+    console.log("recipes", recipes)
+   
+  };
 
   // const [recipeID, setRecipeID] = useState<string>("")
 
@@ -65,20 +65,17 @@ export default function SavedRecipes() {
         setIsLoading(true);
         const response = await getRetrievingRecipes();
         setRecipes(response.recipes);
-        console.log("response.savedSelectedCountries", response.savedSelectedCountries)
-        setSelectedCountriesArray(response.savedSelectedCountries)
-        console.log("selectedCountriesArray", selectedCountriesArray)
+        setSelectedCountriesArray(response.savedSelectedCountries);
 
         setIsLoading(false);
       } catch (error) {
-        setError(error instanceof Error ? error.message : "An error has occured");
+        setError(
+          error instanceof Error ? error.message : "An error has occured"
+        );
         setIsLoading(false);
       }
     })();
   }, []);
-
-
-  console.log("selectedCountriesArray", selectedCountriesArray)
 
   const handleDeleteRecipe = async (id: string) => {
     await handleRecipeDeletion(id);
@@ -118,10 +115,10 @@ export default function SavedRecipes() {
                 <ArrowLeft className="size-4" />
                 Back to generator
               </Link>
-            
             </Button>
             {selectedCountriesArray.length > 0 && (
-              <DropdownMenuComponent countries={selectedCountriesArray} />)}
+              <DropdownMenuComponent onCountrySelect={ handleSelectedCountry } countries={selectedCountriesArray} />
+            )}
           </div>
 
           <div className={`${cardContentClassName} space-y-4`}>
@@ -170,7 +167,6 @@ export default function SavedRecipes() {
                 ))}
               </div>
             )}
-            
           </div>
         </section>
       </div>
