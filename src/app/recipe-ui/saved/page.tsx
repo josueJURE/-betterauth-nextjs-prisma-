@@ -50,13 +50,16 @@ export default function SavedRecipes() {
   >([]);
   const [selectedCountry, setSelectedCountry] = useState<string>("");
 
-  const handleSelectedCountry = (country: string) => {
+  const handleSelectedCountry = async (country: string) => {
     setSelectedCountry(country);
+
+    setRecipes(recipes.filter((element) => element.country === country));
+
     console.log("selected country:", country);
-    console.log("selectedCountriesArray", selectedCountriesArray)
-    console.log("recipes", recipes)
-    console.log("selectedCountry", selectedCountry)
-   
+    console.log("selectedCountriesArray", selectedCountriesArray);
+    console.log("recipez", recipes);
+    console.log("selectedCountry", selectedCountry);
+    console.log("handleSelectedCountry");
   };
 
   // const [recipeID, setRecipeID] = useState<string>("")
@@ -119,7 +122,10 @@ export default function SavedRecipes() {
               </Link>
             </Button>
             {selectedCountriesArray.length > 0 && (
-              <DropdownMenuComponent onCountrySelect={ handleSelectedCountry } countries={selectedCountriesArray} />
+              <DropdownMenuComponent
+                onCountrySelect={handleSelectedCountry}
+                countries={selectedCountriesArray}
+              />
             )}
           </div>
 
@@ -158,6 +164,7 @@ export default function SavedRecipes() {
               <div className="grid gap-4">
                 {recipes.map((recipe) => (
                   <ReadMore
+                    country={recipe.country}
                     key={recipe.id}
                     id={recipe.id}
                     text={recipe.content}

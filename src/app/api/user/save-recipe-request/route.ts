@@ -72,6 +72,8 @@ export async function PATCH(request: NextRequest) {
     );
     const savedRecipe = savedRecipeResult.rows[0];
 
+    console.log(savedRecipe)
+
     return NextResponse.json(
       {
         message: "recipe added to your favorites",
