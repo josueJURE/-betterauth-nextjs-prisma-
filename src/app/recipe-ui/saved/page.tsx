@@ -53,11 +53,18 @@ export default function SavedRecipes() {
   const handleSelectedCountry = async (country: string) => {
     setSelectedCountry(country);
 
-    setRecipes(recipes.filter((element) => element.country === country));
+    const filteredRecipes = recipes.filter(
+      (element) => element.country === country
+    );
+  
+    setRecipes(filteredRecipes);
+
+    // setRecipes(recipes.filter((element) => element.country === country));
 
     console.log("selected country:", country);
     console.log("selectedCountriesArray", selectedCountriesArray);
-    console.log("recipez", recipes);
+    console.log("recipez", recipes.length);
+    console.log("recipes", recipes)
     console.log("selectedCountry", selectedCountry);
     console.log("handleSelectedCountry");
   };
@@ -70,6 +77,7 @@ export default function SavedRecipes() {
         setIsLoading(true);
         const response = await getRetrievingRecipes();
         setRecipes(response.recipes);
+        console.log("response.recipes", response.recipes)
         setSelectedCountriesArray(response.savedSelectedCountries);
 
         setIsLoading(false);
