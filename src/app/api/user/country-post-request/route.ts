@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
     const encoder = new TextEncoder();
 
     // Mock recipe for development to save tokens
-    const mockRecipe = `(Canada)
+    const mockRecipe = `(Russia 2)
 Dish Name:
 Vegan Borscht
 
