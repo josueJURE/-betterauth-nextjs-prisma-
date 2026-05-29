@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
       [country, userId]
     );
 
+
     if (updatedPinnedCountries.rowCount === 0) {
       return NextResponse.json(
         { success: false, message: "User not found" },
@@ -66,7 +67,7 @@ export async function POST(request: NextRequest) {
     const encoder = new TextEncoder();
 
     // Mock recipe for development to save tokens
-    const mockRecipe = `(mockRecipe aa)
+    const mockRecipe = `(Russia 2)
 Dish Name:
 Vegan Borscht
 

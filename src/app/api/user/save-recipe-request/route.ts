@@ -39,7 +39,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const { menuContent } = saveRecipeValidation.data;
+    const { country, menuContent } = saveRecipeValidation.data;
     const extractedDetails = extractRecipeDetails(menuContent);
     const nutrition = normalizeNutrition(saveRecipeValidation.data.nutrition);
     const shoppingList = normalizeShoppingList(
@@ -53,15 +53,17 @@ export async function PATCH(request: NextRequest) {
     const userId = session.user.id;
 
     const savedRecipeResult = await sql(
-      `INSERT INTO "recipe" ("id", "content", "nutrition", "shoppingList", "userId", "createdAt", "updatedAt")
-       VALUES (gen_random_uuid()::text, $1, $2::jsonb, $3::jsonb, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `INSERT INTO "recipe" ("id", "country", "content", "nutrition", "shoppingList", "userId", "createdAt", "updatedAt")
+       VALUES (gen_random_uuid()::text, $1, $2, $3::jsonb, $4::jsonb, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
        ON CONFLICT ("userId", "content")
        DO UPDATE SET
+         "country" = EXCLUDED."country",
          "nutrition" = EXCLUDED."nutrition",
          "shoppingList" = EXCLUDED."shoppingList",
          "updatedAt" = CURRENT_TIMESTAMP
-       RETURNING "id", "title", "content", "imageUrl", "audioUrl", "nutrition", "shoppingList", "userId", "createdAt", "updatedAt"`,
+       RETURNING "id", "title", "country", "content", "imageUrl", "audioUrl", "nutrition", "shoppingList", "userId", "createdAt", "updatedAt"`,
       [
+        country,
         menuContent,
         JSON.stringify(recipeNutrition),
         JSON.stringify(recipeShoppingList),
@@ -69,6 +71,8 @@ export async function PATCH(request: NextRequest) {
       ]
     );
     const savedRecipe = savedRecipeResult.rows[0];
+
+    console.log(savedRecipe)
 
     return NextResponse.json(
       {

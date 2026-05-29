@@ -24,21 +24,16 @@ import {
   secondaryButtonClassName,
   themeColor,
 } from "@/utils/const";
-import {
-  DropdownMenuComponent
-} from "@/components/ui/drop-down-function"
+import { DropdownMenuComponent } from "@/components/ui/drop-down-function";
 import type {
   NutritionItem,
   ShoppingListItem,
 } from "@/lib/validations/user-choices";
 
-import type {
-  DropdownMenuComponentType
-} from "@/utils/types"
-
 export default function SavedRecipes() {
   interface Recipe {
     content: string;
+    country: string | null;
     id: string;
     createdAt: string;
     nutrition: NutritionItem[];
@@ -47,17 +42,21 @@ export default function SavedRecipes() {
     // Add other fields of the recipe object here
   }
 
-
-
-  
-
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>()
-  const [selectedCountriesArray, setSelectedCountriesArray] = useState<string[]>([])
+  const [error, setError] = useState<string>();
+  const [selectedCountriesArray, setSelectedCountriesArray] = useState<
+    string[]
+  >([]);
+  const [selectedCountry, setSelectedCountry] = useState<string>("");
 
+  const handleSelectedCountry = async (country: string) => {
+    setSelectedCountry(country);
+  };
 
-  // const [recipeID, setRecipeID] = useState<string>("")
+  const visibleRecipes = selectedCountry
+    ? recipes.filter((recipe) => recipe.country === selectedCountry)
+    : recipes;
 
   useEffect(() => {
     (async () => {
@@ -65,20 +64,17 @@ export default function SavedRecipes() {
         setIsLoading(true);
         const response = await getRetrievingRecipes();
         setRecipes(response.recipes);
-        console.log("response.savedSelectedCountries", response.savedSelectedCountries)
-        setSelectedCountriesArray(response.savedSelectedCountries)
-        console.log("selectedCountriesArray", selectedCountriesArray)
+        setSelectedCountriesArray(response.savedSelectedCountries);
 
         setIsLoading(false);
       } catch (error) {
-        setError(error instanceof Error ? error.message : "An error has occured");
+        setError(
+          error instanceof Error ? error.message : "An error has occured"
+        );
         setIsLoading(false);
       }
     })();
   }, []);
-
-
-  console.log("selectedCountriesArray", selectedCountriesArray)
 
   const handleDeleteRecipe = async (id: string) => {
     await handleRecipeDeletion(id);
@@ -118,10 +114,13 @@ export default function SavedRecipes() {
                 <ArrowLeft className="size-4" />
                 Back to generator
               </Link>
-            
             </Button>
             {selectedCountriesArray.length > 0 && (
-              <DropdownMenuComponent countries={selectedCountriesArray} />)}
+              <DropdownMenuComponent
+                onCountrySelect={handleSelectedCountry}
+                countries={selectedCountriesArray}
+              />
+            )}
           </div>
 
           <div className={`${cardContentClassName} space-y-4`}>
@@ -137,10 +136,12 @@ export default function SavedRecipes() {
               </div>
             )}
 
-            {!isLoading && !error && recipes.length === 0 && (
+            {!isLoading && !error && visibleRecipes.length === 0 && (
               <div className="rounded-lg border border-[#dfe8dd] bg-white/80 px-4 py-8 text-center sm:px-5">
                 <h2 className="font-serif text-xl font-semibold text-[#24382d] sm:text-2xl">
-                  No saved recipes yet
+                  {selectedCountry
+                    ? `No saved recipes for ${selectedCountry} yet`
+                    : "No saved recipes yet"}
                 </h2>
                 <p className={`${bodyTextClassName} mt-2`}>
                   Generate a menu, save it, and it will appear here.
@@ -157,8 +158,9 @@ export default function SavedRecipes() {
 
             {!isLoading && !error && (
               <div className="grid gap-4">
-                {recipes.map((recipe) => (
+                {visibleRecipes.map((recipe) => (
                   <ReadMore
+                    country={recipe.country}
                     key={recipe.id}
                     id={recipe.id}
                     text={recipe.content}
@@ -170,7 +172,6 @@ export default function SavedRecipes() {
                 ))}
               </div>
             )}
-            
           </div>
         </section>
       </div>

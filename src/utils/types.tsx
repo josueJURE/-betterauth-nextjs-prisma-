@@ -9,6 +9,7 @@ import type { CSSProperties, ReactNode } from "react";
 
 export type DropdownMenuComponentType = {
   countries: string[];
+  onCountrySelect?: (country: string) => void;
 };
 
 // ✅ inferred type from schema
@@ -78,6 +79,7 @@ export interface DietaryRequirementsProps {
 
 
 export interface ReadMoreProps {
+  country: string | null;
   id: string;
   text: string;
   nutrition?: NutritionItem[];

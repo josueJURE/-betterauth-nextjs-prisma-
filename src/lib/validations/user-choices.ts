@@ -89,6 +89,11 @@ export const shoppingListItemSchema = z.object({
 export const shoppingListSchema = z.array(shoppingListItemSchema).max(80);
 
 export const saveRecipeSchema = z.object({
+  country: z
+    .string()
+    .trim()
+    .min(1, "Country is required")
+    .max(100, "Country name is too long"),
   menuContent: recipeContentSchema,
   nutrition: nutritionSchema.default([]),
   shoppingList: shoppingListSchema.default([]),

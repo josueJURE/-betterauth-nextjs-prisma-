@@ -194,7 +194,9 @@ export function ReadMore({
   shoppingList,
   amountOfWords = 50,
   onDelete,
+  country
 }: ReadMoreProps) {
+  console.log("countryReadMore", country)
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [recipeId, setRecipeId] = useState<string>("")
   const [isNutritionExpanded, setIsNutritionExpanded] =
@@ -249,8 +251,10 @@ async function toggleCookedRecipes() {
   try {
     if(response.ok) {
       const data = await response.json()
+      console.log("data", data)
+      
       console.log(data.status)
-      console.log(data.message)
+      
      } 
 
   } catch(error) {
@@ -308,6 +312,7 @@ async function toggleCookedRecipes() {
               >
                 {!isCooked ? "not cooked yet" : "cooked"}
               </Button>
+              <div>{country ? country: "unknown"}</div>
             </CardDescription>
           </CardHeader>
           <CardContent

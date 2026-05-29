@@ -46,6 +46,7 @@ export const handleRecipeDeletion = async (id: string) => {
 };
 
 type SaveRecipePayload = {
+  country: string;
   menuContent: string;
   nutrition: NutritionItem[];
   shoppingList: ShoppingListItem[];
@@ -104,4 +105,3 @@ export const handleCountrySelectionResponse = async ({
 
   return response;
 };
-

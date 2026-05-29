@@ -1,35 +1,56 @@
-import { Button } from "@/components/ui/button"
+"use client";
+
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
-import type {
-  DropdownMenuComponentType
-} from "@/utils/types"
+import { useState } from "react";
 
-export function DropdownMenuComponent({ countries }: DropdownMenuComponentType) {
+import type { DropdownMenuComponentType } from "@/utils/types";
+
+export function DropdownMenuComponent({
+  countries,
+  onCountrySelect,
+}: DropdownMenuComponentType) {
+  const [country, setCountry] = useState<string>("");
+
+  function handleSelectedCountry(selectedCountry: string) {
+    setCountry(selectedCountry);
+    onCountrySelect?.(selectedCountry);
+  }
+
+  function handleAllCountries() {
+    setCountry("");
+    onCountrySelect?.("");
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">Sort by country</Button>
+        <Button variant="outline">{country || "Sort by country"}</Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent>
         <DropdownMenuGroup>
           {countries.map((country) => (
-            <DropdownMenuItem key={country}>
+            <DropdownMenuItem
+              key={country}
+              onSelect={() => handleSelectedCountry(country)}
+            >
               {country}
             </DropdownMenuItem>
           ))}
         </DropdownMenuGroup>
-
-        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem onSelect={handleAllCountries}>
+            All countries
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

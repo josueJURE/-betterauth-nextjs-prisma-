@@ -11,6 +11,7 @@ import {
 type SavedRecipeRow = {
   id: string;
   title: string | null;
+  country: string | null;
   content: string;
   imageUrl: string | null;
   audioUrl: string | null;
@@ -52,7 +53,7 @@ export async function GET() {
     const savedSelectedCountries = selectedCountriesResult.rows;
 
     const savedRecipesResult = await sql<SavedRecipeRow>(
-      `SELECT "id", "title", "content", "imageUrl", "audioUrl", "nutrition", "shoppingList", "userId", "createdAt", "updatedAt"
+      `SELECT "id", "title", "country", "content", "imageUrl", "audioUrl", "nutrition", "shoppingList", "userId", "createdAt", "updatedAt"
        FROM "recipe"
        WHERE "userId" = $1
        ORDER BY "createdAt" DESC`,
