@@ -54,8 +54,6 @@ export default function SavedRecipes() {
     setSelectedCountry(country);
   };
 
-  console.log("recipes",recipes)
-
   const visibleRecipes = selectedCountry
     ? recipes.filter((recipe) => recipe.country === selectedCountry)
     : recipes;

@@ -6,7 +6,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -17,14 +16,17 @@ import type { DropdownMenuComponentType } from "@/utils/types";
 export function DropdownMenuComponent({
   countries,
   onCountrySelect,
-  
-
 }: DropdownMenuComponentType) {
   const [country, setCountry] = useState<string>("");
 
   function handleSelectedCountry(selectedCountry: string) {
     setCountry(selectedCountry);
     onCountrySelect?.(selectedCountry);
+  }
+
+  function handleAllCountries() {
+    setCountry("");
+    onCountrySelect?.("");
   }
 
   return (
@@ -44,8 +46,11 @@ export function DropdownMenuComponent({
             </DropdownMenuItem>
           ))}
         </DropdownMenuGroup>
-
-        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem onSelect={handleAllCountries}>
+            All countries
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );
