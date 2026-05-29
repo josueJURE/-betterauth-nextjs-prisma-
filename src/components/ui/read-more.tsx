@@ -194,11 +194,11 @@ export function ReadMore({
   shoppingList,
   amountOfWords = 50,
   onDelete,
-  country
+  country,
 }: ReadMoreProps) {
-  console.log("countryReadMore", country)
+  console.log("countryReadMore", country);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [recipeId, setRecipeId] = useState<string>("")
+  // const [recipeId, setRecipeId] = useState<string>("")
   const [isNutritionExpanded, setIsNutritionExpanded] =
     useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
@@ -233,37 +233,28 @@ export function ReadMore({
   const displayDate = formatDatefunction(parsedDate);
   const nutritionContentId = `${id}-nutrition-content`;
 
+  async function toggleCookedRecipes() {
+    const response = await fetch("/api/user/cooked-recipe", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ isCooked, id }),
+    });
 
-async function toggleCookedRecipes() {
-  const response = await fetch('/api/user/cooked-recipe', {
-    method: "POST", 
-    headers: {
+    console.log("recipeId", id);
 
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({isCooked, recipeId  })
-  })
+    try {
+      if (response.ok) {
+        const data = await response.json();
+        console.log("data", data);
 
-
-
-  console.log("recipeId", recipeId )
-
-  try {
-    if(response.ok) {
-      const data = await response.json()
-      console.log("data", data)
-      
-      console.log(data.status)
-      
-     } 
-
-  } catch(error) {
-    console.log("error")
+        console.log(data.status);
+      }
+    } catch (error) {
+      console.log("error");
+    }
   }
-
-
-
-} 
 
   const handleDeleteClick = async () => {
     if (!onDelete || isDeleting) {
@@ -304,21 +295,16 @@ async function toggleCookedRecipes() {
                 id={id}
                 className="min-h-11 rounded-md px-4 text-sm font-semibold  sm:text-base"
                 onClick={async () => {
-                  setRecipeId(id)
-                
                   setIsCooked((prev) => !prev);
                   await toggleCookedRecipes();
                 }}
               >
                 {!isCooked ? "not cooked yet" : "cooked"}
               </Button>
-              <div>{country ? country: "unknown"}</div>
+              <div>{country ? country : "unknown"}</div>
             </CardDescription>
           </CardHeader>
-          <CardContent
-         
-            className={scrollableCardContentClassName}
-          >
+          <CardContent className={scrollableCardContentClassName}>
             <p className={bodyTextClassName}>
               {beginText}
               {itCanOverFlow && !isExpanded ? "..." : ""}
@@ -330,7 +316,6 @@ async function toggleCookedRecipes() {
             {itCanOverFlow ? (
               <>
                 <Button
-              
                   variant="ghost"
                   className="min-h-11 rounded-md px-4 text-sm font-semibold hover:bg-[#f2f7f3] sm:text-base"
                   style={{ color: themeColor }}
