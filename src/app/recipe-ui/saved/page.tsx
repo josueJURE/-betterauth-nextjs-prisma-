@@ -52,24 +52,13 @@ export default function SavedRecipes() {
 
   const handleSelectedCountry = async (country: string) => {
     setSelectedCountry(country);
-
-    const filteredRecipes = recipes.filter(
-      (element) => element.country === country
-    );
-  
-    setRecipes(filteredRecipes);
-
-    // setRecipes(recipes.filter((element) => element.country === country));
-
-    console.log("selected country:", country);
-    console.log("selectedCountriesArray", selectedCountriesArray);
-    console.log("recipez", recipes.length);
-    console.log("recipes", recipes)
-    console.log("selectedCountry", selectedCountry);
-    console.log("handleSelectedCountry");
   };
 
-  // const [recipeID, setRecipeID] = useState<string>("")
+  console.log("recipes",recipes)
+
+  const visibleRecipes = selectedCountry
+    ? recipes.filter((recipe) => recipe.country === selectedCountry)
+    : recipes;
 
   useEffect(() => {
     (async () => {
@@ -77,7 +66,6 @@ export default function SavedRecipes() {
         setIsLoading(true);
         const response = await getRetrievingRecipes();
         setRecipes(response.recipes);
-        console.log("response.recipes", response.recipes)
         setSelectedCountriesArray(response.savedSelectedCountries);
 
         setIsLoading(false);
@@ -150,10 +138,12 @@ export default function SavedRecipes() {
               </div>
             )}
 
-            {!isLoading && !error && recipes.length === 0 && (
+            {!isLoading && !error && visibleRecipes.length === 0 && (
               <div className="rounded-lg border border-[#dfe8dd] bg-white/80 px-4 py-8 text-center sm:px-5">
                 <h2 className="font-serif text-xl font-semibold text-[#24382d] sm:text-2xl">
-                  No saved recipes yet
+                  {selectedCountry
+                    ? `No saved recipes for ${selectedCountry} yet`
+                    : "No saved recipes yet"}
                 </h2>
                 <p className={`${bodyTextClassName} mt-2`}>
                   Generate a menu, save it, and it will appear here.
@@ -170,7 +160,7 @@ export default function SavedRecipes() {
 
             {!isLoading && !error && (
               <div className="grid gap-4">
-                {recipes.map((recipe) => (
+                {visibleRecipes.map((recipe) => (
                   <ReadMore
                     country={recipe.country}
                     key={recipe.id}
