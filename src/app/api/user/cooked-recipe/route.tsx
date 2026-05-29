@@ -11,7 +11,6 @@ export async function POST(request: NextRequest) {
       headers: await headers(),
     });
     const body = await request.json();
-    console.log(body);
 
     const userCookedRecipeSchemaValidation =
       userCookedRecipeSchema.safeParse(body);
@@ -25,9 +24,6 @@ export async function POST(request: NextRequest) {
 
     const { isCooked, recipeId } = userCookedRecipeSchemaValidation.data;
     const userId = session?.user.id;
-
-    console.log("isCooked", isCooked)
-    console.log("recipeId", recipeId)
 
     const updateCookedRecipe = await sql(`
     UPDATE "recipe"
@@ -46,9 +42,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       message: "we receive your request",
+      isCooked: updateCookedRecipe.rows[0].isCooked,
       status: 200,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({
       message: "Something went wrong, internal system error",
       status: 500,

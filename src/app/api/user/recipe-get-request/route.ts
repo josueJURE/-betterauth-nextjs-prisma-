@@ -17,6 +17,7 @@ type SavedRecipeRow = {
   audioUrl: string | null;
   nutrition: unknown;
   shoppingList: unknown;
+  isCooked: boolean;
   userId: string;
   createdAt: string;
   updatedAt: string;
@@ -53,7 +54,7 @@ export async function GET() {
     const savedSelectedCountries = selectedCountriesResult.rows;
 
     const savedRecipesResult = await sql<SavedRecipeRow>(
-      `SELECT "id", "title", "country", "content", "imageUrl", "audioUrl", "nutrition", "shoppingList", "userId", "createdAt", "updatedAt"
+      `SELECT "id", "title", "country", "content", "imageUrl", "audioUrl", "nutrition", "shoppingList", "userId", "createdAt", "updatedAt", "isCooked"
        FROM "recipe"
        WHERE "userId" = $1
        ORDER BY "createdAt" DESC`,

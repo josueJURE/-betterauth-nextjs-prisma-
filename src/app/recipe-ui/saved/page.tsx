@@ -38,6 +38,7 @@ export default function SavedRecipes() {
     createdAt: string;
     nutrition: NutritionItem[];
     shoppingList: ShoppingListItem[];
+    isCooked: boolean;
 
     // Add other fields of the recipe object here
   }
@@ -167,6 +168,7 @@ export default function SavedRecipes() {
                     nutrition={recipe.nutrition}
                     shoppingList={recipe.shoppingList}
                     date={recipe.createdAt}
+                    alreadyCooked={recipe.isCooked}
                     onDelete={handleDeleteRecipe}
                   />
                 ))}
