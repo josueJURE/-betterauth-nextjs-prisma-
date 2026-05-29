@@ -233,13 +233,13 @@ export function ReadMore({
   const displayDate = formatDatefunction(parsedDate);
   const nutritionContentId = `${id}-nutrition-content`;
 
-  async function toggleCookedRecipes() {
+  async function toggleCookedRecipes(nextIsCooked: boolean) {
     const response = await fetch("/api/user/cooked-recipe", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ isCooked, id }),
+      body: JSON.stringify({  isCooked: nextIsCooked, recipeId: id }),
     });
 
     console.log("recipeId", id);
@@ -295,8 +295,9 @@ export function ReadMore({
                 id={id}
                 className="min-h-11 rounded-md px-4 text-sm font-semibold  sm:text-base"
                 onClick={async () => {
-                  setIsCooked((prev) => !prev);
-                  await toggleCookedRecipes();
+                  const nextIsCooked = !isCooked;
+                  setIsCooked(nextIsCooked);
+                  await toggleCookedRecipes(nextIsCooked);
                 }}
               >
                 {!isCooked ? "not cooked yet" : "cooked"}
