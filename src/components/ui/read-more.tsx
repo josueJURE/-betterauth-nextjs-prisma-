@@ -195,14 +195,14 @@ export function ReadMore({
   amountOfWords = 50,
   onDelete,
   country,
+  alreadyCooked,
 }: ReadMoreProps) {
-  console.log("countryReadMore", country);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   // const [recipeId, setRecipeId] = useState<string>("")
   const [isNutritionExpanded, setIsNutritionExpanded] =
     useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const [isCooked, setIsCooked] = useState<boolean>(false);
+  const [isCooked, setIsCooked] = useState<boolean>(alreadyCooked);
   const words = text.trim().split(/\s+/);
   const itCanOverFlow = words.length > amountOfWords;
   const beginText = itCanOverFlow
@@ -233,26 +233,17 @@ export function ReadMore({
   const displayDate = formatDatefunction(parsedDate);
   const nutritionContentId = `${id}-nutrition-content`;
 
-  async function toggleCookedRecipes() {
+  async function toggleCookedRecipes(nextIsCooked: boolean) {
     const response = await fetch("/api/user/cooked-recipe", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ isCooked, id }),
+      body: JSON.stringify({ isCooked: nextIsCooked, recipeId: id }),
     });
 
-    console.log("recipeId", id);
-
-    try {
-      if (response.ok) {
-        const data = await response.json();
-        console.log("data", data);
-
-        console.log(data.status);
-      }
-    } catch (error) {
-      console.log("error");
+    if (!response.ok) {
+      throw new Error("Failed to update cooked status");
     }
   }
 
@@ -295,8 +286,13 @@ export function ReadMore({
                 id={id}
                 className="min-h-11 rounded-md px-4 text-sm font-semibold  sm:text-base"
                 onClick={async () => {
-                  setIsCooked((prev) => !prev);
-                  await toggleCookedRecipes();
+                  const nextIsCooked = !isCooked;
+                  setIsCooked(nextIsCooked);
+                  try {
+                    await toggleCookedRecipes(nextIsCooked);
+                  } catch {
+                    setIsCooked(isCooked);
+                  }
                 }}
               >
                 {!isCooked ? "not cooked yet" : "cooked"}
