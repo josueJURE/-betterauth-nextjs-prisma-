@@ -53,6 +53,10 @@ export async function GET() {
     );
     const savedSelectedCountries = selectedCountriesResult.rows;
 
+    console.table({
+      savedSelectedCountries:  savedSelectedCountries[0].selectedCountries
+    })
+
     const savedRecipesResult = await sql<SavedRecipeRow>(
       `SELECT "id", "title", "country", "content", "imageUrl", "audioUrl", "nutrition", "shoppingList", "userId", "createdAt", "updatedAt", "isCooked"
        FROM "recipe"

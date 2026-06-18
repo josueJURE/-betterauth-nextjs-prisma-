@@ -21,11 +21,7 @@ export default function RecipeAudioPlayer({ url }: RecipeAudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const onPlayPause = () => {
-    if (!wavesurfer) {
-      return;
-    }
-
-    wavesurfer.playPause();
+    wavesurfer?.playPause()
   };
 
   const onSkipForward = () => {
