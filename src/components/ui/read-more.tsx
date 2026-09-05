@@ -34,6 +34,8 @@ import type {
   ShoppingListItem,
 } from "@/lib/validations/user-choices";
 
+import { toggleCookedRecipes } from "@/lib/utils";
+
 const nutritionColors = ["#c75a2d", "#6f9b78", "#2f7a95", "#c4a84e", "#8b5cf6"];
 const nutritionPreviewCount = 4;
 const tabsContentClassName = "mt-4 h-[380px] w-full overflow-hidden";
@@ -233,19 +235,21 @@ export function ReadMore({
   const displayDate = formatDatefunction(parsedDate);
   const nutritionContentId = `${id}-nutrition-content`;
 
-  async function toggleCookedRecipes(nextIsCooked: boolean) {
-    const response = await fetch("/api/user/cooked-recipe", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ isCooked: nextIsCooked, recipeId: id }),
-    });
+  // async function toggleCookedRecipes(nextIsCooked: boolean) {
+  //   const response = await fetch("/api/user/cooked-recipe", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ isCooked: nextIsCooked, recipeId: id }),
+  //   });
 
-    if (!response.ok) {
-      throw new Error("Failed to update cooked status");
-    }
-  }
+  //   if (!response.ok) {
+  //     throw new Error("Failed to update cooked status");
+  //   }
+  // }
+
+  toggleCookedRecipes(id, isCooked)
 
   const handleDeleteClick = async () => {
     if (!onDelete || isDeleting) {
@@ -289,7 +293,7 @@ export function ReadMore({
                   const nextIsCooked = !isCooked;
                   setIsCooked(nextIsCooked);
                   try {
-                    await toggleCookedRecipes(nextIsCooked);
+                    await toggleCookedRecipes(id, isCooked);
                   } catch {
                     setIsCooked(isCooked);
                   }

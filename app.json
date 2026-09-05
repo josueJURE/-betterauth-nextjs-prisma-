@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "Culinary Explorer",
+    "slug": "culinary-explorer",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "culinaryexplorer",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.culinaryexplorer.mobile"
+    },
+    "android": {
+      "package": "com.culinaryexplorer.mobile",
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/mock-image.jpeg",
+      "output": "static"
+    },
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "headers": {
+            "Cross-Origin-Embedder-Policy": "credentialless",
+            "Cross-Origin-Opener-Policy": "same-origin"
+          }
+        }
+      ],
+      "expo-sqlite",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F8F4EC"
+        }
+      ]
+    ]
+  }
+}

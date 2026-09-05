@@ -80,12 +80,12 @@ export interface DietaryRequirementsProps {
 
 export interface ReadMoreProps {
   country: string | null;
-  id: string;
+  id: number;
   text: string;
   nutrition?: NutritionItem[];
   shoppingList?: ShoppingListItem[];
   amountOfWords?: number;
   date: string;
-  onDelete?: (id: string) => Promise<void> | void;
+  onDelete?: (id: number) => Promise<void> | void;
   alreadyCooked: boolean;
 }
